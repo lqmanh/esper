@@ -13,8 +13,10 @@ class Processor:
     appropriate world methods there, such as
     `for ent, (rend, vel) in self.world.get_components(Renderable, Velocity):`
     """
-    def __init__(self):
+    def __init__(self, fps=60):
         self.world = None
+        self.ms_per_update = 1 / fps
+        self.lag = 0
 
     def process(self, *args):
         raise NotImplementedError
@@ -528,3 +530,16 @@ class CachedWorld:
             processor.process(*args)
             process_time = int(round((_time.process_time() - start_time) * 1000, 2))
             self.process_times[processor.__class__.__name__] = process_time
+
+
+class FlexWorld(World):
+    def __init__(self):
+        super().__init__(timed=False)
+
+    def process(self, dt):
+        for processor in self._processors:
+            processor.lag += dt
+
+            if processor.lag >= processor.ms_per_update:
+                processor.process(dt)
+                processor.lag -= processor.ms_per_update
