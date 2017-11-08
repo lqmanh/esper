@@ -18,7 +18,7 @@ class Processor:
         self.ms_per_update = 1 / fps
         self.lag = 0
 
-    def process(self, *args):
+    def process(self, *dt):
         raise NotImplementedError
 
 
