@@ -33,7 +33,7 @@ class Renderable(pyglet.sprite.Sprite):
 ################################
 class MovementProcessor(esper.Processor):
     def __init__(self, minx, maxx, miny, maxy):
-        super().__init__(fps=60)
+        super().__init__(fps=15)
         self.minx = minx
         self.miny = miny
         self.maxx = maxx
@@ -51,8 +51,9 @@ class MovementProcessor(esper.Processor):
             # new_y = min(self.maxy - body.height, new_y)
             # body.x = new_x
             # body.y = new_y
-            body.x += vel.x
-            body.y += vel.y
+
+            body.x += vel.x * self.ms_per_update
+            body.y += vel.y * self.ms_per_update
 
 
 class RenderProcessor(esper.Processor):
@@ -99,13 +100,13 @@ world.add_processor(RenderProcessor())
 @window.event
 def on_key_press(key, mod):
     if key == pyglet.window.key.RIGHT:
-        world.component_for_entity(player, Velocity).x = 3
+        world.component_for_entity(player, Velocity).x = 300
     if key == pyglet.window.key.LEFT:
-        world.component_for_entity(player, Velocity).x = -3
+        world.component_for_entity(player, Velocity).x = -300
     if key == pyglet.window.key.UP:
-        world.component_for_entity(player, Velocity).y = 3
+        world.component_for_entity(player, Velocity).y = 300
     if key == pyglet.window.key.DOWN:
-        world.component_for_entity(player, Velocity).y = -3
+        world.component_for_entity(player, Velocity).y = -300
 
 
 @window.event
